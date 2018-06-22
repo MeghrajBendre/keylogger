@@ -8,7 +8,7 @@
 #include <string.h>
 
 char kbd_device_name[25] = "/dev/input/";
-
+int shift_check = 0;
 char* key_map[][2] = {
     {"\0", "\0"}, 
     {"_ESC_", "_ESC_"}, 

