@@ -4,6 +4,10 @@
 #include <fcntl.h>
 #include <linux/input.h>
 #include <sys/stat.h>
+#include <error.h>
+#include <string.h>
+
+char kbd_device_name[25] = "/dev/input/";
 
 char* key_map[][2] = {
     {"\0", "\0"}, 
